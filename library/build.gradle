@@ -1,8 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'bintray-release'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
 
-def final String VERSION_NAME = "0.3.0"
-def final int VERSION_CODE = 30
+def VERSION_NAME = "0.3.0"
+def VERSION_CODE = 30
 
 android {
     compileSdkVersion 23
@@ -28,11 +29,40 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
 
-publish {
-    userOrg = 'flschweiger'
-    groupId = 'link.fls'
-    artifactId = 'swipestack'
-    publishVersion = VERSION_NAME
-    desc = 'A swipeable view stack for Android.'
-    website = 'https://github.com/flschweiger/SwipeStack'
+
+
+
+def libraryGroupId = 'com.conouch.view'
+def libraryArtifactId = 'swipe-stack'
+def libraryVersion = '1.1.0'
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId libraryGroupId
+            version libraryVersion
+            artifactId libraryArtifactId
+
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'http://maven.kandaping.com:8081/artifactory'
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
 }
