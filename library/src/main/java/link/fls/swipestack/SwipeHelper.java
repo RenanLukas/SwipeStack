@@ -116,8 +116,8 @@ public class SwipeHelper implements View.OnTouchListener {
         }
 
         float viewCenterHorizontal = mObservedView.getX() + (mObservedView.getWidth() / 2);
-        float parentFirstThird = mSwipeStack.getWidth() / 3f;
-        float parentLastThird = parentFirstThird * 2;
+        final float parentFirstSlice = mSwipeStack.getWidth() / 20f;
+        final float parentLastSlice = mSwipeStack.getWidth() - parentFirstSlice;
 
         if (viewCenterHorizontal < parentFirstThird &&
                 mSwipeStack.getAllowedSwipeDirections() != SwipeStack.SWIPE_DIRECTION_ONLY_RIGHT) {
